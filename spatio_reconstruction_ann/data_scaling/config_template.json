@@ -1,0 +1,44 @@
+{
+    "dataset_parameters": {
+        "dataset_filepath": "original_paper/flow_cylinder.npy",
+        "oscillation_start_idx": 0,
+        "unseen_dataset_filepaths": {
+            "diamond_ar_1p25": "primitives/diamond_ar_1p25/w_z.npy",
+            "diamond_ar_1p5": "primitives/diamond_ar_1p5/w_z.npy",
+            "diamond_ar_1p66": "primitives/diamond_ar_1p66/w_z.npy",
+            "diamond_ar_2p0": "primitives/diamond_ar_2p0/w_z.npy",
+            "triangle_ar_1p25": "primitives/triangle_ar_1p25/w_z.npy",
+            "triangle_ar_1p5": "primitives/triangle_ar_1p5/w_z.npy",
+            "triangle_ar_1p66": "primitives/triangle_ar_1p66/w_z.npy",
+            "triangle_ar_2p0": "primitives/triangle_ar_2p0/w_z.npy",
+            "cylinder_half": "primitives/cylinder_half/w_z.npy",
+            "cylinder_half_flipped": "primitives/cylinder_half_flipped/w_z.npy"
+        },
+        "unseen_oscillation_start_idx": 100,
+        "unseen_obstacle_step": 400,
+        "unseen_cropping_params": {
+            "unseen_crop_x_start": 58,
+            "unseen_crop_x_end": 442,
+            "unseen_crop_y_start": 0,
+            "unseen_crop_y_end": 199
+        }
+    },
+    "data_scaling_parameters": {
+        "scaling_method": "center"
+    },
+    "sensor_parameters": {
+        "sensor_type": "wall",
+        "sensor_num": 5,
+        "sensor_distribution": "random",
+        "random_seed": 815
+    },
+    "training_parameters": {
+        "num_epochs": 4000,
+        "split_ratio": 0.667,
+        "learning_rate": 0.01,
+        "weight_decay": 0.0001,
+        "learning_rate_change": 0.9,
+        "weight_decay_change": 0.8,
+        "epoch_update": 100
+    }
+}
