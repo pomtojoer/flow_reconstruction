@@ -3,7 +3,7 @@ This repository contains the experiments run
 
 ## Setup
 ```
-pip3 -r install requirements.txt
+pip3 install -r requirements.txt
 ```
 
 To obtain the data required for these experiments, please download them from [link](www.placeholder.com)
