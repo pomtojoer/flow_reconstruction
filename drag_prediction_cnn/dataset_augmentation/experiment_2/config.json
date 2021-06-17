@@ -1,0 +1,34 @@
+{
+    "dataset_parameters": {
+        "x_dataset_filepath": "dataset_6_40/geometry_prediction/shapes.npy",
+        "y_dataset_filepath": "dataset_6_40/geometry_prediction/drags.npy",
+        "train_ratio": 0.8,
+        "val_ratio": 0.1,
+        "test_ratio": 0.1,
+        "flipped": false,
+        "unseen_dataset_filepaths": {
+            "diamond_ar_1p25": "primitives/diamond_ar_1p25/w_z.npy",
+            "diamond_ar_1p5": "primitives/diamond_ar_1p5/w_z.npy",
+            "diamond_ar_1p66": "primitives/diamond_ar_1p66/w_z.npy",
+            "diamond_ar_2p0": "primitives/diamond_ar_2p0/w_z.npy",
+            "triangle_ar_1p25": "primitives/triangle_ar_1p25/w_z.npy",
+            "triangle_ar_1p5": "primitives/triangle_ar_1p5/w_z.npy",
+            "triangle_ar_1p66": "primitives/triangle_ar_1p66/w_z.npy",
+            "triangle_ar_2p0": "primitives/triangle_ar_2p0/w_z.npy",
+            "cylinder_half": "primitives/cylinder_half/w_z.npy",
+            "cylinder_half_flipped": "primitives/cylinder_half_flipped/w_z.npy"
+        },
+        "unseen_oscillation_start_idx": 100,
+        "unseen_obstacle_step": 400,
+        "unseen_cropping_params": {
+            "unseen_crop_x_start": 58,
+            "unseen_crop_x_end": 442,
+            "unseen_crop_y_start": 0,
+            "unseen_crop_y_end": 199
+        }
+    },
+    "training_parameters": {
+        "num_epochs": 1000,
+        "batch_size": 16
+    }
+}

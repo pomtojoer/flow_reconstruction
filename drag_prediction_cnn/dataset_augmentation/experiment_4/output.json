@@ -1,0 +1,15 @@
+{
+    "counter": 0,
+    "0": {
+        "total_training_time": 13.204084873199463,
+        "total_epochs": 69,
+        "total_prediction_time": 0.12479448318481445,
+        "total_prediction_samples": 40,
+        "max_abs_error": 0.8483111526678004,
+        "min_abs_error": 0.0004084030092763591,
+        "mean_abs_error": 0.09690164084477206,
+        "max_rel_error": 0.548198416170965,
+        "min_rel_error": 0.00035189467998175276,
+        "mean_rel_error": 0.07617076450698992
+    }
+}

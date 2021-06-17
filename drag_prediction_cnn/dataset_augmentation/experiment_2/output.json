@@ -1,0 +1,27 @@
+{
+    "counter": 1,
+    "0": {
+        "total_training_time": 4.479925870895386,
+        "total_epochs": 23,
+        "total_prediction_time": 0.12510418891906738,
+        "total_prediction_samples": 20,
+        "max_abs_error": 0.4855645124066852,
+        "min_abs_error": 0.0008179581918019707,
+        "mean_abs_error": 0.11859884432836862,
+        "max_rel_error": 0.2258703523233679,
+        "min_rel_error": 0.0008426961907419136,
+        "mean_rel_error": 0.09386643086338639
+    },
+    "1": {
+        "total_training_time": 5.442492485046387,
+        "total_epochs": 35,
+        "total_prediction_time": 0.1225736141204834,
+        "total_prediction_samples": 20,
+        "max_abs_error": 0.22421312754688127,
+        "min_abs_error": 0.0025698367703936853,
+        "mean_abs_error": 0.0643480087519324,
+        "max_rel_error": 0.1749308524891334,
+        "min_rel_error": 0.0011954126010267634,
+        "mean_rel_error": 0.06107455970972152
+    }
+}

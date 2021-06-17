@@ -1,0 +1,45 @@
+{
+    "counter": 3,
+    "0": {
+        "total_training_time": 1811.8459467887878,
+        "total_epochs": 101,
+        "total_prediction_time": 0.9687387943267822,
+        "total_prediction_samples": 1200,
+        "max_abs_error": 0.17658688262939437,
+        "min_abs_error": 4.942855834855209e-06,
+        "mean_abs_error": 0.017042502392641705,
+        "max_rel_error": 0.19295175607711046,
+        "min_rel_error": 1.9438718017323534e-06,
+        "mean_rel_error": 0.008816026525297067
+    },
+    "1": {
+        "total_prediction_time": 1.6443896293640137,
+        "total_prediction_samples": 1200,
+        "max_abs_error": 0.17658688262939437,
+        "min_abs_error": 4.942855834855209e-06,
+        "mean_abs_error": 0.017042502392641705,
+        "max_rel_error": 0.19295175607711046,
+        "min_rel_error": 1.9438718017323534e-06,
+        "mean_rel_error": 0.008816026525297067
+    },
+    "2": {
+        "total_prediction_time": 1.1223933696746826,
+        "total_prediction_samples": 1200,
+        "max_abs_error": 0.17658688262939437,
+        "min_abs_error": 4.942855834855209e-06,
+        "mean_abs_error": 0.017042502392641705,
+        "max_rel_error": 0.19295175607711046,
+        "min_rel_error": 1.9438718017323534e-06,
+        "mean_rel_error": 0.008816026525297067
+    },
+    "3": {
+        "total_prediction_time": 1.0840914249420166,
+        "total_prediction_samples": 1200,
+        "max_abs_error": 0.17658688262939437,
+        "min_abs_error": 4.942855834855209e-06,
+        "mean_abs_error": 0.017042502392641705,
+        "max_rel_error": 0.19295175607711046,
+        "min_rel_error": 1.9438718017323534e-06,
+        "mean_rel_error": 0.008816026525297067
+    }
+}
