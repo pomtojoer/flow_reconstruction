@@ -26,13 +26,7 @@
         "scaling_method": "center"
     },
     "sensor_parameters": {
-        "sensor_type": "wall",
-        "origin_x": 50,
-        "origin_y": 100,
-        "rad": 36,
-        "sensor_num": 5,
-        "sensor_distribution": "random",
-        "random_seed": 815
+        
     },
     "training_parameters": {
         "num_epochs": 4000,

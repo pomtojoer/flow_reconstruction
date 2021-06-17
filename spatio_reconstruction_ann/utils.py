@@ -74,9 +74,9 @@ def rescale_data(x_train, x_test=None, scaling_params=None):
         if x_max is None:
             x_max = x_train.max(axis=0)
 
-        x_train = (x_train - x_min) / (x_max - x_min)
+        x_train = np.divide((x_train - x_min), (x_max - x_min), out=np.zeros_like(x_train), where=(x_max-x_min)!=0)
         if x_test is not None:
-            x_test = (x_test - x_min) / (x_max - x_min)
+            x_test = np.divide((x_test - x_min), (x_max - x_min), out=np.zeros_like(x_test), where=(x_max-x_min)!=0)
 
         scaling_params = {
             'scaling_method': method,
@@ -293,7 +293,7 @@ def _set_sensor_wall(x, sensor_params):
         pivots = np.asarray(pivots).ravel()
 
         upstream_mask = np.ones((m,n))
-        upstream_mask[:cords[:,0].min(),:] = 0
+        upstream_mask[:cords[:,0].max(),:] = 0
 
         sensor_params['pivots'] = pivots
         sensor_params['upstream_mask'] = upstream_mask
@@ -352,9 +352,9 @@ def _set_sensor_line(x, sensor_params):
 
         upstream_mask = np.ones((m,n))
         if spanwise_orientation:
-            upstream_mask[:line_start,:] = 0
-        else:
             upstream_mask[:origin,:] = 0
+        else:
+            upstream_mask[:line_start,:] = 0
 
         sensor_params['pivots'] = pivots
         sensor_params['upstream_mask'] = upstream_mask
@@ -514,10 +514,14 @@ def _set_sensor_patch(x, sensor_params):
         pivots = np.where(mask.reshape(-1) == 1)
         pivots = np.asarray(pivots).ravel()
 
+        upstream_mask = np.ones((m,n))
+        upstream_mask[:line_start_streamwise,:] = 0
+
         sensor_num = len(cords)
 
         sensor_params['pivots'] = pivots
         sensor_params['sensor_num'] = sensor_num
+        sensor_params['upstream_mask'] = upstream_mask
         
         dist_from_rear = (line_start_streamwise-75)*1/50
         streamwise_total_length = (x_cord[0,-1]-x_cord[0,0])*1/50
@@ -619,6 +623,7 @@ def visualise_extracted_sensor_locations(y, sensor_params, save_folder_path, sam
     xgrid = np.arange(0, m, 1)
     ygrid = np.arange(0, n, 1)
     mX, mY = np.meshgrid(xgrid, ygrid)
+    # mX, mY = np.meshgrid(ygrid, xgrid)
 
     fig, axs = plt.subplots(len(samples), 1, facecolor='white', edgecolor='k', figsize=(7.9, 4.7*len(samples)))
     for idx, sample in enumerate(samples):
@@ -635,6 +640,9 @@ def visualise_extracted_sensor_locations(y, sensor_params, save_folder_path, sam
         ax.imshow(y_sample.T, cmap=cmocean.cm.balance, interpolation='none', vmin=-minmax, vmax=minmax)
         ax.contourf(mX, mY, y_sample.T, 80, cmap=cmocean.cm.balance, alpha=1, vmin=-minmax, vmax=minmax)
 
+        # ax.imshow(y_sample, cmap=cmocean.cm.balance, interpolation='none', vmin=-minmax, vmax=minmax)
+        # ax.contourf(mX, mY, y_sample, 80, cmap=cmocean.cm.balance, alpha=1, vmin=-minmax, vmax=minmax)
+
         ygrid = range(n)
         xgrid = range(m)
         yv, xv = np.meshgrid(ygrid, xgrid)
@@ -643,14 +651,16 @@ def visualise_extracted_sensor_locations(y, sensor_params, save_folder_path, sam
         y_sensors = yv.reshape(1, m*n)[:, sensor_locations]
 
         ax.scatter(x_sensors, y_sensors, marker='.', color='#ff7f00', s=100, zorder=5)
+        # ax.scatter(y_sensors, x_sensors, marker='.', color='#ff7f00', s=100, zorder=5)
 
         for i in range(len(sensor_locations)):
             ax.annotate(f' {i}', (x_sensors[0][i], y_sensors[0][i]), color='#ff7f00')
-        ax.set_title('Truth with sensor locations')
+            # ax.annotate(f' {i}', (y_sensors[0][i], x_sensors[0][i]), color='#ff7f00')
+        # ax.set_title('Truth with sensor locations')
         ax.grid(False)
         ax.axis('off')
 
-    plt.tight_layout()
+    fig.tight_layout()
     if obstacle is not None:
         plt.savefig(f'{save_folder_path}/{obstacle}/{obstacle}_sensor_location_visualisation.png', facecolor=fig.get_facecolor(), edgecolor='none')
     else:
@@ -807,6 +817,7 @@ def visualise_error_across_samples(error, save_folder_path, samples=[0], obstacl
         ax.set_ylabel('L2 error percentage, %')
         ax.set_xlabel('Sample number')
 
+    plt.tight_layout()
     if obstacle is not None:
         plt.savefig(f'{save_folder_path}/{obstacle}/{obstacle}_error_per_sample.png', facecolor=fig.get_facecolor(), edgecolor='none')
     else:
@@ -832,7 +843,7 @@ def visualise_max_error_comparison(actual, prediction, error, l2_error, save_fol
     minmax = np.nanmax(np.abs(actual_sample)) * 0.65
 
     # Plotting
-    fig, axs = plt.subplots(3, facecolor="white",  edgecolor='k', figsize=(7.9,16.9))
+    fig, axs = plt.subplots(3, facecolor="white",  edgecolor='k', figsize=(7.9,14))
     fig.suptitle('Output comparison')
 
     axs[0].imshow(actual_sample.T, cmap=cmocean.cm.balance, interpolation='none', vmin=-minmax, vmax=minmax)

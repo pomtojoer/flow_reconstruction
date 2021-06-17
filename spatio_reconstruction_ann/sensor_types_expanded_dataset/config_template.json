@@ -1,7 +1,7 @@
 {
     "dataset_parameters": {
-        "dataset_filepath": "primitives/cylinder/w_z.npy",
-        "oscillation_start_idx": 100,
+        "dataset_filepath": "primitives/combined_primitives/w_z.npy",
+        "oscillation_start_idx": 0,
         "unseen_dataset_filepaths": {
             "diamond_ar_1p25": "primitives/diamond_ar_1p25/w_z.npy",
             "diamond_ar_1p5": "primitives/diamond_ar_1p5/w_z.npy",
@@ -26,13 +26,7 @@
         "scaling_method": "center"
     },
     "sensor_parameters": {
-        "sensor_type": "wall",
-        "origin_x": 50,
-        "origin_y": 100,
-        "rad": 36,
-        "sensor_num": 5,
-        "sensor_distribution": "random",
-        "random_seed": 815
+        
     },
     "training_parameters": {
         "num_epochs": 4000,

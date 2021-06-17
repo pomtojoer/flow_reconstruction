@@ -76,6 +76,7 @@ Training configuration:
     y = load_data(dataset_filepath)
     y = np.transpose(y, (0, 2, 1))
     y = y[oscillation_start_idx:,:,:]
+    np.random.seed(42)
     np.random.shuffle(y)
     visualise_loaded_data(y, save_folder_path)
     

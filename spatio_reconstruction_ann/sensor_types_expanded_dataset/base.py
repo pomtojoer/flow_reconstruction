@@ -33,9 +33,7 @@ def experiment(save_folder_path, experiment_config, train_model=False):
     sensor_params = experiment_config['sensor_parameters']
 
     sensor_type = sensor_params['sensor_type']
-    n_sensors = sensor_params['sensor_num']
-    sensor_distribution = sensor_params['sensor_distribution']
-    random_seed = sensor_params['random_seed']
+    sensor_config_str = '\n'.join([f'    {k}: {v}' for k,v in sensor_params.items()])
 
     # extracting training parameters
     training_params = experiment_config['training_parameters']
@@ -47,6 +45,7 @@ def experiment(save_folder_path, experiment_config, train_model=False):
     learning_rate_change = training_params['learning_rate_change']
     weight_decay_change  = training_params['weight_decay_change']
     epoch_update = training_params['epoch_update']
+    early_stopping = training_params['early_stopping']
 
     # displaying paramters
     print(f'''
@@ -69,8 +68,7 @@ Preprocessing configuration:
 
 Sensor configuration:
     Sensor type: {sensor_type}
-    Sensor count: {n_sensors}
-    Sensor distribution: {sensor_distribution}
+    {sensor_config_str}
 
 Training configuration:
     Number of epochs: {num_epochs}
@@ -88,6 +86,8 @@ Training configuration:
     y = load_data(dataset_filepath)
     y = y[oscillation_start_idx:,:,:]
     y = np.transpose(y, (0, 2, 1))
+    np.random.seed(42)
+    np.random.shuffle(y)
     visualise_loaded_data(y, save_folder_path)
     
     print('######################## Reshaping and scaling data ########################')
@@ -111,7 +111,8 @@ Training configuration:
 
     # Getting sensor locations
     sensors, sensor_params = get_sensor_data(y_train_reshaped, sensor_params)
-    sensors_test, sensor_params = get_sensor_data(y_test_reshaped, sensor_params)
+    sensors_test, _ = get_sensor_data(y_test_reshaped, sensor_params)
+    output['sensor_num'] = sensor_params['sensor_num']
 
     # reshaping sensors
     sensors = reshape_for_ann(sensors)
@@ -148,8 +149,11 @@ Training configuration:
 
         # Early stopping callback
         early_stopping_callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
-
-        callbacks = [tensorboard_callback, learning_rate_callback, early_stopping_callback]
+        
+        if early_stopping:
+            callbacks = [tensorboard_callback, learning_rate_callback, early_stopping_callback]
+        else:
+            callbacks = [tensorboard_callback, learning_rate_callback]
 
         training_start = time.time()
         history = model.fit(
@@ -264,7 +268,6 @@ Training configuration:
     del sensors, sensors_test
     del prediction, prediction_inv_reshaped, prediction_inv_scaled
     del pod_prediction, pod_prediction_inv_scaled
-
 
     print('######################## Testing against unseen ########################')
     for unseen_obstacle, unseen_dataset_filepath in unseen_dataset_filepaths.items():

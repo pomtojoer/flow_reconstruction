@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument(
     'parent',
-    help='Parent experiment',
+    help='Parent experiment. 0 = data scaling, 1 = sensor placement',
     type=int,
     choices=[0, 1, 2]
 )
