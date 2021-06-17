@@ -1,7 +1,7 @@
 {
     "dataset_parameters": {
-        "dataset_filepath": "primitives/combined_primitives/w_z.npy",
-        "oscillation_start_idx": 0,
+        "dataset_filepath": "primitives/cylinder/w_z.npy",
+        "oscillation_start_idx": 100,
         "unseen_dataset_filepaths": {
             "diamond_ar_1p25": "primitives/diamond_ar_1p25/w_z.npy",
             "diamond_ar_1p5": "primitives/diamond_ar_1p5/w_z.npy",
@@ -33,5 +33,8 @@
         "num_epochs": 5000,
         "split_ratio": 0.8,
         "batch_size": 100
+    },
+    "model_parameters": {
+        "model_name": "interpolation"
     }
 }

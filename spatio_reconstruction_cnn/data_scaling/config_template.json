@@ -23,7 +23,7 @@
         }
     },
     "data_scaling_parameters": {
-        "scaling_method": "center"
+        "scaling_method": "none"
     },
     "sensor_parameters": {
         "sensor_type": "equal",

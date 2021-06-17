@@ -76,6 +76,7 @@ Training configuration:
     y = load_data(dataset_filepath)
     y = np.transpose(y, (0, 2, 1))
     y = y[oscillation_start_idx:,:,:]
+    np.random.shuffle(y)
     visualise_loaded_data(y, save_folder_path)
     
     # reshaping (t, m, n, 1)
@@ -95,7 +96,7 @@ Training configuration:
 
     print('######################## Extracting sensor inputs ########################')
     # creating sensors
-    x = y[:, ::down_res, ::down_res, :].repeat(down_res, axis=1).repeat(down_res, axis=2)
+    x, _ = get_sensor_data(y, sensor_params)
 
     # splitting sensors
     x_train, x_test = split_data(x, split_ratio)
@@ -224,7 +225,7 @@ Training configuration:
 
         print('######################## Extracting unseen sensor inputs ########################')
         # creating sensors
-        unseen_x = unseen_y[:, ::down_res, ::down_res, :].repeat(down_res, axis=1).repeat(down_res, axis=2)
+        unseen_x, _ = get_sensor_data(unseen_y, sensor_params)
 
         # visualising sensors
         visualise_resolution_reduction(unseen_x, unseen_y, down_res, save_folder_path, obstacle=unseen_obstacle)

@@ -92,156 +92,56 @@ def visualise_resizing_operation(y_orig_sample, y_resize_sample, save_folder_pat
     plt.show()
 
 
+def rescale_data(x_train, x_test=None, scaling_params=None):
+    method = scaling_params.get('scaling_method', None)
 
-# def rescale_data(x_train, x_test=None, scaling_params=None):
-#     method = scaling_params.get('scaling_method', None)
+    if method=='center':
+        x_mean = scaling_params.get('x_mean')
 
-#     if method=='normalise':
-#         x_min = scaling_params.get('x_min')
-#         x_max = scaling_params.get('x_max')
-#         if x_min is None:
-#             x_min = x_train.min(axis=0)
-#         if x_max is None:
-#             x_max = x_train.max(axis=0)
+        if x_mean is None:
+            x_mean = x_train.mean(axis=0)
 
-#         x_train = (x_train - x_min) / (x_max - x_min)
-#         if x_test is not None:
-#             x_test = (x_test - x_min) / (x_max - x_min)
+        x_train = x_train - x_mean
+        if x_test is not None:
+            x_test = x_test - x_mean
 
-#         scaling_params = {
-#             'scaling_method': method,
-#             'x_min': x_min,
-#             'x_max': x_max    
-#         }
-    
-#     elif method=='normalise_balanced':
-#         x_mean = scaling_params.get('x_mean')
-#         x_min = scaling_params.get('x_min')
-#         x_max = scaling_params.get('x_max')
+        scaling_params = {
+            'scaling_method': method,
+            'x_mean': x_mean,
+        }
 
-#         if x_mean is None:
-#             x_mean = x_train.mean(axis=0)
-#         if x_min is None:
-#             x_min = x_train.min(axis=0)
-#         if x_max is None:
-#             x_max = x_train.max(axis=0)
+    else:
+        print('Unknown scaling type. Returning data unscaled')
 
-#         x_train = (x_train - x_mean) / (x_max - x_min)
-#         if x_test is not None:
-#             x_test = (x_test - x_mean) / (x_max - x_min)
+        scaling_params = {
+            'scaling_method': 'unscaled',
+        }
 
-#         scaling_params = {
-#             'scaling_method': method,
-#             'x_mean': x_mean,
-#             'x_min': x_min,
-#             'x_max': x_max    
-#         }
-    
-#     elif method=='standardise':
-#         x_mean = scaling_params.get('x_mean')
-#         x_std = scaling_params.get('x_std')
+    print(f'''Scaled data details:
+    train_data_rescaled has min: {x_train.min():.4f}, max: {x_train.max():.4f}, mean: {x_train.mean():.4f}
+    test_data_rescaled has min: {x_test.min() if x_test is not None else 0:.4f}, max: {x_test.max() if x_test is not None else 0:.4f}, mean: {x_test.mean() if x_test is not None else 0:.4f}\n''')
 
-#         if x_mean is None:
-#             x_mean = x_train.mean(axis=0)
-#         if x_std is None:
-#             x_std = x_train.std(axis=0)
+    return x_train, x_test, scaling_params
 
-#         out_train = np.zeros((x_train.shape))
-#         x_train = np.divide((x_train - x_mean), x_std, out=out_train, where=x_std!=0)
-#         if x_test is not None:
-#             out_test = np.zeros((x_test.shape))
-#             x_test = np.divide((x_test - x_mean), x_std, out=out_test, where=x_std!=0)
 
-#         scaling_params = {
-#             'scaling_method': method,
-#             'x_mean': x_mean,
-#             'x_std': x_std    
-#         }
+def unscale_data(x, scaling_params):
+    method = scaling_params['scaling_method']
 
-#     elif method=='center':
-#         x_mean = scaling_params.get('x_mean')
+    if method=='center':
+        x_mean = scaling_params['x_mean']
 
-#         if x_mean is None:
-#             x_mean = x_train.mean(axis=0)
+        x = x + x_mean
 
-#         x_train = x_train - x_mean
-#         if x_test is not None:
-#             x_test = x_test - x_mean
+    else:
+        pass
 
-#         scaling_params = {
-#             'scaling_method': method,
-#             'x_mean': x_mean,
-#         }
+    return x
 
-#     elif method=='center_all':
-#         x_mean = scaling_params.get('x_mean')
 
-#         if x_mean is None:
-#             x_mean = x_train.mean()
-
-#         x_train = x_train - x_mean
-#         if x_test is not None:
-#             x_test = x_test - x_mean
-
-#         scaling_params = {
-#             'scaling_method': method,
-#             'x_mean': x_mean,
-#         }
-
-#     else:
-#         print('Unknown scaling type. Returning data unscaled')
-
-#         scaling_params = {
-#             'scaling_method': 'unscaled',
-#         }
-
-#     print(f'''Scaled data details:
-#     train_data_rescaled has min: {x_train.min():.4f}, max: {x_train.max():.4f}, mean: {x_train.mean():.4f}
-#     test_data_rescaled has min: {x_test.min() if x_test is not None else 0:.4f}, max: {x_test.max() if x_test is not None else 0:.4f}, mean: {x_test.mean() if x_test is not None else 0:.4f}\n''')
-
-#     return x_train, x_test, scaling_params
-
-# def unscale_data(x, scaling_params):
-#     method = scaling_params['scaling_method']
-
-#     if method=='normalise':
-#         x_min = scaling_params['x_min']
-#         x_max = scaling_params['x_max']
-
-#         x = x * (x_max - x_min) + x_min
-    
-#     elif method=='normalise_balanced':
-#         x_mean = scaling_params['x_mean']
-#         x_min = scaling_params['x_min']
-#         x_max = scaling_params['x_max']
-
-#         x = x * (x_max - x_min) + x_mean
-    
-#     elif method=='standardise':
-#         x_mean = scaling_params['x_mean']
-#         x_std = scaling_params['x_std']
-        
-#         x = x * x_std + x_mean
-
-#     elif method=='center' or method=='center_all':
-#         x_mean = scaling_params['x_mean']
-
-#         x = x + x_mean
-
-#     else:
-#         pass
-
-#     return x
 
 def reshape_for_cnn(x):
     return x.reshape(x.shape[0], x.shape[1], x.shape[2], 1)
     
-
-# def reshape_for_img(x, sensor_params):
-#     m = sensor_params.get('m')
-#     n = sensor_params.get('n')
-    
-#     return x.reshape(x.shape[0],m,n)
 
 # -----------------------------------------------------------
 # Sensor extraction functions
@@ -405,21 +305,6 @@ def calculate_l2_error_norm(actual, prediction, upstream_mask=None):
         actual = actual * upstream_mask
         prediction = prediction * upstream_mask
     return np.linalg.norm(actual-prediction, axis=-1,) / np.linalg.norm(actual, axis=-1,)
-
-
-# def visualise_upstream_mask(upstream_mask, y, sensor_params, save_folder_path):
-#     y_sample = y[0,:,:]
-#     minmax = np.nanmax(np.abs(y_sample)) * 0.65
-#     fig, axs = plt.subplots(3, 1, figsize=(8,14), facecolor='white', edgecolor='k')
-#     axs[0].imshow(upstream_mask.T, cmap='gray')
-#     axs[0].set_title('upstream binary mask')
-#     axs[1].imshow(y_sample.T, cmap=cmocean.cm.balance, interpolation='none', vmin=-minmax, vmax=minmax)
-#     axs[1].set_title('actual sample')
-#     axs[2].imshow((y_sample*upstream_mask).T, cmap=cmocean.cm.balance, interpolation='none', vmin=-minmax, vmax=minmax)
-#     axs[2].set_title('masked sample')
-#     plt.tight_layout()
-#     plt.savefig(f'{save_folder_path}/upstream_mask.png', facecolor=fig.get_facecolor(), edgecolor='none')
-#     plt.show()
 
 
 def visualise_error_across_samples(error, save_folder_path, samples=[0], obstacle=None):

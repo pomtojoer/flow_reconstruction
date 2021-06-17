@@ -6,7 +6,6 @@ import os
 
 from utils import *
 from models import *
-import tensorflow as tf
 
 
 def experiment(save_folder_path, experiment_config, train_model=False):
@@ -42,6 +41,12 @@ def experiment(save_folder_path, experiment_config, train_model=False):
     split_ratio = training_params['split_ratio']
     batch_size = training_params['batch_size']
 
+    # extracting model parameters
+    model_params = experiment_config['model_parameters']
+
+    model_name = model_params['model_name']
+    model_method = model_params['model_method']
+
     # displaying paramters
     print(f'''
 Experiment details:
@@ -68,7 +73,11 @@ Sensor configuration:
 Training configuration:
     Number of epochs: {num_epochs}
     Train/Test split: {split_ratio}
-    Batch size{batch_size}\n''')
+    Batch size: {batch_size}
+
+Model configuration:
+    Model: {model_name}
+    Method: {model_method}\n''')
 
     output = {}
 
@@ -107,70 +116,70 @@ Training configuration:
     x shape: {x.shape}
     y shape: {y.shape}\n''')
 
-    if train_model:
-        print('######################## Initialising model ########################')
-        input_layer_shape = x_train.shape[1:]
+    # if train_model:
+    #     print('######################## Initialising model ########################')
+    #     input_layer_shape = x_train.shape[1:]
 
-        model = dsc_ms(input_layer_shape)
-        model.summary()
+    #     model = dsc_ms(input_layer_shape)
+    #     model.summary()
 
-        print('######################## Training model ########################')
-        # Keras tensorboard callback
-        logdir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
-        tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)
+    #     print('######################## Training model ########################')
+    #     # Keras tensorboard callback
+    #     logdir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
+    #     tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=logdir)
 
-        early_stopping_callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=20,verbose=1)
-        time_history_callback = TimeHistory()
-        callbacks = [tensorboard_callback, early_stopping_callback, time_history_callback]
+    #     early_stopping_callback = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=20,verbose=1)
+    #     time_history_callback = TimeHistory()
+    #     callbacks = [tensorboard_callback, early_stopping_callback, time_history_callback]
 
-        training_start = time.time()
-        history = model.fit(
-            x = x_train,
-            y = y_train,
-            epochs=num_epochs,
-            batch_size=batch_size,
-            callbacks=callbacks,
-            validation_data=(x_test, y_test),
-            shuffle=True,
-            verbose=2,
-        )
-        training_end = time.time()
-        output['total_training_time'] = training_end-training_start
-        output['total_epochs'] = len(history.epoch)
-        print(f'Training on {len(history.epoch)} took {training_end-training_start}s')
+    #     training_start = time.time()
+    #     history = model.fit(
+    #         x = x_train,
+    #         y = y_train,
+    #         epochs=num_epochs,
+    #         batch_size=batch_size,
+    #         callbacks=callbacks,
+    #         validation_data=(x_test, y_test),
+    #         shuffle=True,
+    #         verbose=2,
+    #     )
+    #     training_end = time.time()
+    #     output['total_training_time'] = training_end-training_start
+    #     output['total_epochs'] = len(history.epoch)
+    #     print(f'Training on {len(history.epoch)} took {training_end-training_start}s')
 
-        print('######################## Saving model ########################')
-        # plotting error history
-        iterations, train_loss, val_loss = extract_train_val_error(history)
-        plot_train_val_error(iterations, train_loss, val_loss, save_folder_path)
-        save_train_val_error(iterations, train_loss, val_loss, save_folder_path)
+    #     print('######################## Saving model ########################')
+    #     # plotting error history
+    #     iterations, train_loss, val_loss = extract_train_val_error(history)
+    #     plot_train_val_error(iterations, train_loss, val_loss, save_folder_path)
+    #     save_train_val_error(iterations, train_loss, val_loss, save_folder_path)
 
-        # plotting time history
-        times = time_history_callback.times
-        plot_time_per_epoch(iterations, times, save_folder_path)
-        save_time_per_epoch(times, save_folder_path)
+    #     # plotting time history
+    #     times = time_history_callback.times
+    #     plot_time_per_epoch(iterations, times, save_folder_path)
+    #     save_time_per_epoch(times, save_folder_path)
         
-        model.save(f'{save_folder_path}/model.h5')
-        print('######################## Trained model saved ########################')
-    else:
-        print('######################## Initialising model ########################')
-        model_path = f'{save_folder_path}/model.h5'
-        model = tf.keras.models.load_model(model_path)
-        model.summary()
+    #     model.save(f'{save_folder_path}/model.h5')
+    #     print('######################## Trained model saved ########################')
+    # else:
+    #     print('######################## Initialising model ########################')
+    #     model_path = f'{save_folder_path}/model.h5'
+    #     model = tf.keras.models.load_model(model_path)
+    #     model.summary()
 
-        # plotting error history
-        iterations, train_loss, val_loss, _ = load_train_val_error(save_folder_path)
-        plot_train_val_error(iterations, train_loss, val_loss, save_folder_path)
+    #     # plotting error history
+    #     iterations, train_loss, val_loss, _ = load_train_val_error(save_folder_path)
+    #     plot_train_val_error(iterations, train_loss, val_loss, save_folder_path)
 
-        # plotting time history
-        times, _ = load_time_per_epoch(save_folder_path)
-        plot_time_per_epoch(iterations, times, save_folder_path)
-        print('######################## Trained model loaded ########################')
+    #     # plotting time history
+    #     times, _ = load_time_per_epoch(save_folder_path)
+    #     plot_time_per_epoch(iterations, times, save_folder_path)
+    #     print('######################## Trained model loaded ########################')
 
     print('######################## Calculating error ########################')
     # predicting, scaling prediction and reshaping prediction
     prediction_start = time.time()
-    prediction = model.predict(x_test)
+    prediction = interpolation(x_test, down_res, model_method)
     prediction_end = time.time()
 
     output['total_prediction_time'] = prediction_end-prediction_start
@@ -236,7 +245,7 @@ Training configuration:
         print('######################## Calculating unseen error ########################')
         # predicting, scaling prediction and reshaping prediction
         unseen_prediction_start = time.time()
-        unseen_prediction = model.predict(unseen_x)
+        unseen_prediction = interpolation(unseen_x, down_res, model_method)
         unseen_prediction_end = time.time()
 
         output[f'{unseen_obstacle}_total_prediction_time'] = unseen_prediction_end-unseen_prediction_start

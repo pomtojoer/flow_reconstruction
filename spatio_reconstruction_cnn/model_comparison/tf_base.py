@@ -9,6 +9,7 @@ from models import *
 import tensorflow as tf
 
 
+
 def experiment(save_folder_path, experiment_config, train_model=False):
     print('######################## Experiment details ########################')
     # dataset parameters
@@ -42,6 +43,11 @@ def experiment(save_folder_path, experiment_config, train_model=False):
     split_ratio = training_params['split_ratio']
     batch_size = training_params['batch_size']
 
+    # extracting model parameters
+    model_params = experiment_config['model_parameters']
+
+    model_name = model_params['model_name']
+
     # displaying paramters
     print(f'''
 Experiment details:
@@ -68,8 +74,11 @@ Sensor configuration:
 Training configuration:
     Number of epochs: {num_epochs}
     Train/Test split: {split_ratio}
-    Batch size{batch_size}\n''')
-
+    Batch size{batch_size}
+    
+Model configuration:
+    Model: {model_name}\n''')
+    
     output = {}
 
     print('######################## Loading flow data ########################')
@@ -111,7 +120,27 @@ Training configuration:
         print('######################## Initialising model ########################')
         input_layer_shape = x_train.shape[1:]
 
-        model = dsc_ms(input_layer_shape)
+        if model_name == 'srcnn':
+            model = srcnn(input_layer_shape, down_res)
+        elif model_name == 'scnn':
+            model = scnn(input_layer_shape, down_res)
+        elif model_name == 'dsc_ms':
+            model = dsc_ms(input_layer_shape)
+        elif model_name == 'dsc_ms_mod':
+            model = dsc_ms_mod(input_layer_shape, down_res)
+        elif model_name == 'scnn_vgg_mod':
+            model = scnn_vgg_mod(input_layer_shape, down_res)
+        elif model_name == 'dsc_ms_vgg_mod':
+            model = dsc_ms_vgg_mod(input_layer_shape, down_res)
+        elif model_name == 'scnn_sc_mod':
+            model = scnn_sc_mod(input_layer_shape, down_res)
+        elif model_name == 'scnn_custom_loss':
+            model = scnn_custom_loss(input_layer_shape, down_res)
+        elif model_name == 'dsc_ms_mod_custom_loss':
+            model = dsc_ms_mod_custom_loss(input_layer_shape, down_res)
+        else:
+            model = dsc_ms(input_layer_shape)
+
         model.summary()
 
         print('######################## Training model ########################')
@@ -155,7 +184,7 @@ Training configuration:
     else:
         print('######################## Initialising model ########################')
         model_path = f'{save_folder_path}/model.h5'
-        model = tf.keras.models.load_model(model_path)
+        model = tf.keras.models.load_model(model_path, compile=False)
         model.summary()
 
         # plotting error history

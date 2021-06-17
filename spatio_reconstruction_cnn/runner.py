@@ -176,6 +176,36 @@ elif args.parent == 4:
         elif child_exp == 8:
             exp.experiment_8(train_model=train_model)
             K.clear_session()
+        elif child_exp == 9:
+            exp.experiment_9(train_model=train_model)
+            K.clear_session()
+        elif child_exp == 10:
+            exp.experiment_10(train_model=train_model)
+            K.clear_session()
+        elif child_exp == 11:
+            exp.experiment_11(train_model=train_model)
+            K.clear_session()
+        elif child_exp == 12:
+            exp.experiment_12(train_model=train_model)
+            K.clear_session()
+        elif child_exp == 13:
+            exp.experiment_13(train_model=train_model)
+            K.clear_session()
+        elif child_exp == 14:
+            exp.experiment_14(train_model=train_model)
+            K.clear_session()
+        elif child_exp == 15:
+            exp.experiment_15(train_model=train_model)
+            K.clear_session()
+        elif child_exp == 16:
+            exp.experiment_16(train_model=train_model)
+            K.clear_session()
+        elif child_exp == 17:
+            exp.experiment_17(train_model=train_model)
+            K.clear_session()
+        elif child_exp == 18:
+            exp.experiment_18(train_model=train_model)
+            K.clear_session()
         else:
             print(f'unrecognised child {child_exp}, skipping')
             continue

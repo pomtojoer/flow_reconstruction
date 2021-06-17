@@ -89,7 +89,7 @@ Training configuration:
 
     print('######################## Extracting sensor inputs ########################')
     # creating sensors
-    x = y[:, ::down_res, ::down_res, :].repeat(down_res, axis=1).repeat(down_res, axis=2)
+    x, _ = get_sensor_data(y, sensor_params)
 
     # splitting sensors
     x_train, x_test = split_data(x, split_ratio)
@@ -97,9 +97,12 @@ Training configuration:
     # visualising sensors
     visualise_resolution_reduction(x, y, down_res, save_folder_path)
 
-    print(f'''Extracted unseen data details:
+    print(f'''Extracted data details:
     x shape: {x.shape}
     y shape: {y.shape}\n''')
+
+    print('######################## Rescaling inputs ########################')
+    x_train_scaled, x_test_scaled, scaling_params = rescale_data(x_train, x_test, scaling_params)
 
     if train_model:
         print('######################## Initialising model ########################')
@@ -119,12 +122,12 @@ Training configuration:
 
         training_start = time.time()
         history = model.fit(
-            x = x_train,
+            x = x_train_scaled,
             y = y_train,
             epochs=num_epochs,
             batch_size=batch_size,
             callbacks=callbacks,
-            validation_data=(x_test, y_test),
+            validation_data=(x_test_scaled, y_test),
             shuffle=True,
             verbose=2,
         )
@@ -155,7 +158,7 @@ Training configuration:
     print('######################## Calculating error ########################')
     # predicting, scaling prediction and reshaping prediction
     prediction_start = time.time()
-    prediction = model.predict(x_test)
+    prediction = model.predict(x_test_scaled)
     prediction_end = time.time()
 
     output['total_prediction_time'] = prediction_end-prediction_start
@@ -186,6 +189,7 @@ Training configuration:
     # cleaning up
     del y, y_train, y_test
     del x, x_train, x_test
+    del x_train_scaled, x_test_scaled
     del prediction, prediction_inv_scaled
 
     print('######################## Testing against unseen ########################')
@@ -206,7 +210,7 @@ Training configuration:
 
         print('######################## Extracting unseen sensor inputs ########################')
         # creating sensors
-        unseen_x = unseen_y[:, ::down_res, ::down_res, :].repeat(down_res, axis=1).repeat(down_res, axis=2)
+        unseen_x, _ = get_sensor_data(unseen_y, sensor_params)
 
         # visualising sensors
         visualise_resolution_reduction(unseen_x, unseen_y, down_res, save_folder_path, obstacle=unseen_obstacle)
@@ -215,10 +219,13 @@ Training configuration:
         unseen_x shape: {unseen_x.shape}
         unseen_y shape: {unseen_y.shape}\n''')
 
+        print('######################## Rescaling unseen inputs ########################')
+        unseen_x_scaled, _, _ = rescale_data(unseen_x, None, scaling_params=scaling_params)
+
         print('######################## Calculating unseen error ########################')
         # predicting, scaling prediction and reshaping prediction
         unseen_prediction_start = time.time()
-        unseen_prediction = model.predict(unseen_x)
+        unseen_prediction = model.predict(unseen_x_scaled)
         unseen_prediction_end = time.time()
 
         output[f'{unseen_obstacle}_total_prediction_time'] = unseen_prediction_end-unseen_prediction_start
